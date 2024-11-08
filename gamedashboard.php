@@ -326,7 +326,7 @@ $walletResult=mysqli_fetch_array($selectwallet);
       <span class="showload">
       <div class="spinnner-border text-danger" role="status">
                     </div></span>
-             <span id="gameid" class="none"><?php echo sprintf("%03d",gameid($con));?></span>
+             <span id="gameid" class="none"><?php echo sprintf("%03d",gameid($con)+1);?></span>
              <input type="hidden" id="futureid" name="futureid" value="<?php echo sprintf("%03d",gameid($con));?>">
              </h5>
       </div>
