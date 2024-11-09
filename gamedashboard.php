@@ -307,7 +307,7 @@ $walletResult=mysqli_fetch_array($selectwallet);
         <li class="nav-item"> 
 <a class="nav-link active" id="home-tab3" data-toggle="tab" href="#parity" role="tab" onClick="tabname('parity');getResultbyCategory('parity','parity');">Star</a> 
         </li>
-        <li class="nav-item"> 
+        <!-- <li class="nav-item"> 
 <a class="nav-link" id="profile-tab3" data-toggle="tab" href="#sapre" role="tab" onClick="tabname('sapre');getResultbyCategory('sapre','sapre');">Parity</a>
          </li>
         <li class="nav-item"> 
@@ -315,7 +315,7 @@ $walletResult=mysqli_fetch_array($selectwallet);
         </li>
         <li class="nav-item"> 
 <a class="nav-link" id="contact-tab3" data-toggle="tab" href="#emerd" role="tab" onClick="tabname('emerd');getResultbyCategory('emerd','emerd');">Bcone</a> 
-        </li>
+        </li> -->
       </ul>
       <!--=====================game area============================-->
       <div class="appContent1 bg-light mt-n1">
@@ -326,8 +326,9 @@ $walletResult=mysqli_fetch_array($selectwallet);
       <span class="showload">
       <div class="spinnner-border text-danger" role="status">
                     </div></span>
-             <span id="gameid" class="none"><?php echo sprintf("%03d",gameid($con)+1);?></span>
-             <input type="hidden" id="futureid" name="futureid" value="<?php echo sprintf("%03d",gameid($con));?>">
+             <span id="gameid" class="none"><?php echo sprintf("%03d",gameid($con));?></span>
+             <input type="hidden" id="futureid" name="futureid" value="<?php echo sprintf("%03d",gameid($con)+1);?>">
+             <input type="hidden" id="currentid" name="currentid" value="<?php echo sprintf("%03d",gameid($con));?>">
              </h5>
       </div>
       <div class="gameidtimer text-right"> 
@@ -433,7 +434,7 @@ $walletResult=mysqli_fetch_array($selectwallet);
       <!--=========================tab-1========================================-->
         <div class="tab-pane fade active show" id="parity" role="tabpanel"></div>
        <!--=========================tab-1 end========================================-->
-       <!--=========================tab-2========================================-->
+       <!-- =========================tab-2======================================== -->
         <div class="tab-pane fade" id="sapre" role="tabpanel"></div>
         <!--=========================tab-2 end========================================-->
         <!--=========================tab-3========================================-->
@@ -596,13 +597,10 @@ var countDownDate = Date.parse(new Date) / 1e3;
   var seconds = ('0'+Math.floor(n)).slice(-2);
   document.getElementById("demo").innerHTML = "<span class='timer'>0"+Math.floor(minutes)+"</span>" + "<span>:</span>" +"<span class='timer'>"+seconds+"</span>";
 document.getElementById("counter").value = distance;
-if(distance==180 || distance==179 || distance==178 || distance==177 || distance==176){
+if(distance==180){
   winnerResult();
 generateGameid();
 getResultbyCategory('parity','parity');
-getResultbyCategory('sapre','sapre');
-getResultbyCategory('bcone','bcone');
-getResultbyCategory('emerd','emerd');
 }
 if(distance<=30)
 {
@@ -614,15 +612,19 @@ if(distance>=177)
 {
 $(".gbutton2").prop('hidden', true);
 $(".gbutton1").prop('hidden', false);
-}else{ 
+}
+
+else{ 
 $(".gbutton2").prop('hidden', false);
 $(".gbutton1").prop('hidden', true);
 	}
 }
 
+
 function generateGameid()
 {
 	var futureid=$('#futureid').val();
+	var currentid=$('#currentid').val();
 	$.ajax({
     type: "Post",
     data:"futureid=" + futureid + "& type=" + "generate" ,
