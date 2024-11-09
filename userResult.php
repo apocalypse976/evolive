@@ -1,5 +1,5 @@
 <?php
-include("include/connection.php");
+include("betform.php");
 // ($con,$period,$number,$result,$openprice,$tabtype);
 function resultbyUser($con,$periodid,$number,$result,$openprice,$tabtype){
 

@@ -12,7 +12,19 @@ $userid=$_SESSION['AuthUser']['userid'];
 $type=$_POST['type'];
 $name=$_POST['name'];
 ?>
+<?php
+if($name=="Red")
+{
+$num= [0,2,4,6,8];
+}
+elseif($name=="Green"){ 
+  $num= [1,3,5,7,9];
+}
+else{
+  $num= [0,5];
+}
 
+?>
 <div class="row">
                     <div class="col-12">
                     <center><h3 class="mb-1">Contract Money</h3>
@@ -44,6 +56,7 @@ $name=$_POST['name'];
     <input type="hidden" name="value" id="value" class="form-control" value="<?php echo $name;?>">
       <input type="hidden" name="counter" id="counter" class="form-control" >
       <input type="hidden" name="inputgameid" id="inputgameid" class="form-control" value="<?php echo sprintf("%03d",gameid($con));?>"> 
+      <input type="hidden" name="placedValue" id="placedValue" class="form-control" value="<?php echo print_r($num);?>"> 
       <br>
     <center>  <h6 class="mt-2">Total contract money is <span id="showamount">10</span></h6>
       <input type="hidden" name="finalamount" id="finalamount" value="10">

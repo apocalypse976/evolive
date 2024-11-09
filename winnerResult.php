@@ -541,6 +541,7 @@ $ResultQuery= mysqli_query($con,"INSERT INTO `tbl_result`(`periodid`, `price`, `
 }//=====for end
 		}
 $truncateQuery=mysqli_query($con,"TRUNCATE TABLE `tbl_tempwinner`");
+
 //check if result done
 echo("done");
 ?>

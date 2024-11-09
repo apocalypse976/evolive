@@ -11,8 +11,11 @@ include("include/connection.php");
 @$finalamount=$_POST['finalamount'];
 @$tab=$_POST['tab'];
 @$presalerule=$_POST['presalerule'];
+@$placedValue=$_POST['placedValue'];
 
-if($userid=="" || $type=="" || $inputgameid=="" || $finalamount=="")
+
+
+if($userid=="" || $type=="" || $inputgameid=="" || $finalamount==""|| $placedValue=="")
 {
 	echo"2";
 	//check empty
@@ -42,27 +45,45 @@ if($userid=="" || $type=="" || $inputgameid=="" || $finalamount=="")
 		//if($chkwalletRow==''){
 			echo"6";
 		}else{	
-			$sql= mysqli_query($con,"INSERT INTO `tbl_betting` (`userid`, `periodid`, `type`,`value`,`amount`,`tab`,`acceptrule`) VALUES ('".$userid."','".$inputgameid."','".$type."','".$value."','".$finalamount."','".$tab."','".$presalerule."')");
+			// Check if the user has already placed a bet in the current period
+$checkBet = mysqli_query($con, "SELECT * FROM `tbl_betting` WHERE `userid` = '$userid' AND `periodid` = '$inputgameid'");
 
-			//=====================transaction==================================================
-			$sql= mysqli_query($con,"INSERT INTO `tbl_order`(`userid`,`transactionid`,`amount`,`status`) VALUES ('".$userid."','".$inputgameid."','".$finalamount."','1')");
-			@$orderid=mysqli_insert_id($con);
+// Check if the user has already placed a bet in the same period
+$query = mysqli_query($con, "SELECT * FROM `tbl_betting` WHERE `userid` = '$userid' AND `periodid` = '$inputgameid'");
+if (mysqli_num_rows($query) > 0) {
+    echo "7~You have already placed a bet in this period. You cannot place another bet.";
+    exit;
+}
 
-			$sql3= mysqli_query($con,"INSERT INTO `tbl_walletsummery`(`userid`,`orderid`,`amount`,`type`,`actiontype`) VALUES ('".$userid."','".$orderid."','".$finalamount."','debit','join')");
+// Your existing code for inserting the bet...
+ else {
+    // User has not placed a bet, proceed with the insert
+    $sql = mysqli_query($con, "INSERT INTO `tbl_betting` (`userid`, `periodid`, `type`, `value`, `amount`, `tab`, `acceptrule`) 
+                               VALUES ('$userid', '$inputgameid', '$type', '$value', '$finalamount', '$tab', '$presalerule')");
+    
+    // Transaction insertion
+    $sql = mysqli_query($con, "INSERT INTO `tbl_order`(`userid`, `transactionid`, `amount`, `status`) 
+                               VALUES ('$userid', '$inputgameid', '$finalamount', '1')");
+    @$orderid = mysqli_insert_id($con);
 
-			$walletbalance=wallet($con_evolive,'balance',$userid);	
-			//$walletbalance=wallet($con,'amount',$userid);	
-			$finalbalanceDebit=$walletbalance-$finalamount;	
-			
-			$sqlwallet= mysqli_query($con_evolive,"UPDATE `users` SET `balance` = '".$finalbalanceDebit."' WHERE `id`= '".$userid."'");	
-			//$sqlwallet= mysqli_query($con,"UPDATE `tbl_wallet` SET `amount` = '".$finalbalanceDebit."' WHERE `userid`= '".$userid."'");	
+    // Wallet summary
+    $sql3 = mysqli_query($con, "INSERT INTO `tbl_walletsummery`(`userid`, `orderid`, `amount`, `type`, `actiontype`) 
+                                VALUES ('$userid', '$orderid', '$finalamount', 'debit', 'join')");
 
-			//revamp
-			
-			$gameId = "EVO-colourprediction";
-			
-			$bytes = random_bytes(8);
-			$transactionId = strtoupper(bin2hex($bytes));
+    // Calculate the new wallet balance
+    $walletbalance = wallet($con_evolive, 'balance', $userid);   
+    $finalbalanceDebit = $walletbalance - $finalamount;
+
+    // Update the user's balance
+    $sqlwallet = mysqli_query($con_evolive, "UPDATE `users` SET `balance` = '$finalbalanceDebit' WHERE `id`= '$userid'");
+
+    // Revamp the transaction ID generation
+    $gameId = "EVO-colourprediction";
+    $bytes = random_bytes(8);
+    $transactionId = strtoupper(bin2hex($bytes));
+
+}
+
 			
 			
 			//$sqlTransaction= mysqli_query($con_evolive,"INSERT INTO `transactions`(`user_id`,`round_id`,`game_id`,`amount`,`charge`,`final_balance`,`trx_type`,`remarks`,`trx_id`,`qt_trx_id`) VALUES ('".$userid."','".$inputgameid."','0','".$finalamount."','0.00','".$finalamount."','-','DEDUCTED BALANCE (Colour Prediction)','".$transactionId."','".$orderid."')");

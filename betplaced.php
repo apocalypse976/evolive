@@ -7,5 +7,6 @@ if($_SESSION['AuthUser']['username'] =="")
 	header("location:index.php");exit();
 }
 include('include/connection.php');
+
 ?>
 
