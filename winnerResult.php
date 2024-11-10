@@ -542,6 +542,49 @@ $ResultQuery= mysqli_query($con,"INSERT INTO `tbl_result`(`periodid`, `price`, `
 		}
 $truncateQuery=mysqli_query($con,"TRUNCATE TABLE `tbl_tempwinner`");
 
+// Assuming you already have the authenticated user's ID in the session
+// $userid = $_SESSION['AuthUser']['userid'];  // Get the user ID from session
+
+// // Fetch the periodid of the authenticated user
+// $periodid = $_POST['periodid'];  // You can also get the periodid from the session or form input
+
+// // SQL query to fetch the 'value' from 'tbl_betting' and 'randomcolor', 'randomresult' from 'tbl_result'
+// // where the periodid is the same in both tables
+// $sql = "
+//     SELECT 
+//         b.value AS betting_value, 
+//         r.randomcolor, 
+//         r.randomresult
+//     FROM 
+//         tbl_betting b
+//     JOIN 
+//         tbl_result r ON b.userid = r.userid AND b.periodid = r.periodid  // Join based on both userid and periodid
+//     WHERE 
+//         b.userid = '$userid' AND b.periodid = '$periodid'
+//     ORDER BY 
+//         r.createdate DESC LIMIT 1
+// ";
+
+// // Execute the query
+// $result = mysqli_query($con, $sql);
+
+// // Check if the query was successful
+// if ($result && mysqli_num_rows($result) > 0) {
+//     // Fetch the data
+//     $row = mysqli_fetch_assoc($result);
+//     $bettingValue = $row['betting_value'];
+//     $randomColor = $row['randomcolor'];
+//     $randomResult = $row['randomresult'];
+
+//     // Output the data (for testing)
+//     echo "Betting Value: $bettingValue<br>";
+//     echo "Random Color: $randomColor<br>";
+//     echo "Random Result: $randomResult<br>";
+// } else {
+//     echo "No data found for the user in the given period.";
+// }
+
+
 //check if result done
 echo("done");
 ?>

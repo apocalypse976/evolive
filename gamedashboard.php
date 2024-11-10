@@ -326,7 +326,7 @@ $walletResult=mysqli_fetch_array($selectwallet);
       <span class="showload">
       <div class="spinnner-border text-danger" role="status">
                     </div></span>
-             <span id="gameid" class="none"><?php echo sprintf("%03d",gameid($con));?></span>
+             <span id="gameid" class="none"><?php echo sprintf("%03d",gameid($con)+1);?></span>
              <input type="hidden" id="futureid" name="futureid" value="<?php echo sprintf("%03d",gameid($con)+1);?>">
              <input type="hidden" id="currentid" name="currentid" value="<?php echo sprintf("%03d",gameid($con));?>">
              </h5>
@@ -501,7 +501,7 @@ $walletResult=mysqli_fetch_array($selectwallet);
       <input type="hidden" name="type" id="type" class="form-control" value="<?php echo $type;?>">
     <input type="hidden" name="value" id="value" class="form-control" value="<?php echo $name;?>">
       <input type="hidden" name="counter" id="counter" class="form-control" >
-      <input type="hidden" name="inputgameid" id="inputgameid" class="form-control" value="<?php echo sprintf("%03d",gameid($con));?>"> 
+      <input type="hidden" name="inputgameid" id="inputgameid" class="form-control" value="<?php echo sprintf("%03d",gameid($con)+1);?>"> 
       <br>
     <center>  <h6 class="mt-2">Total contract money is <span id="showamount">10</span></h6>
       <input type="hidden" name="finalamount" id="finalamount" value="10">

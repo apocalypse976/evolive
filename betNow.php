@@ -45,43 +45,54 @@ if($userid=="" || $type=="" || $inputgameid=="" || $finalamount==""|| $placedVal
 		//if($chkwalletRow==''){
 			echo"6";
 		}else{	
+
 			// Check if the user has already placed a bet in the current period
 $checkBet = mysqli_query($con, "SELECT * FROM `tbl_betting` WHERE `userid` = '$userid' AND `periodid` = '$inputgameid'");
 
-// Check if the user has already placed a bet in the same period
-$query = mysqli_query($con, "SELECT * FROM `tbl_betting` WHERE `userid` = '$userid' AND `periodid` = '$inputgameid'");
-if (mysqli_num_rows($query) > 0) {
+
+$query = mysqli_query($con, "SELECT * FROM `tbl_betting` WHERE `userid` = '$userid' AND `periodid` = '$inputgameid' AND `value` IS NOT NULL AND `number` IS NOT NULL");
+
+if ($row = mysqli_fetch_assoc($query)) {
+    // If a matching record is found, display an error and exit
     echo "7~You have already placed a bet in this period. You cannot place another bet.";
     exit;
 }
 
 // Your existing code for inserting the bet...
  else {
-    // User has not placed a bet, proceed with the insert
-    $sql = mysqli_query($con, "INSERT INTO `tbl_betting` (`userid`, `periodid`, `type`, `value`, `amount`, `tab`, `acceptrule`) 
-                               VALUES ('$userid', '$inputgameid', '$type', '$value', '$finalamount', '$tab', '$presalerule')");
-    
-    // Transaction insertion
-    $sql = mysqli_query($con, "INSERT INTO `tbl_order`(`userid`, `transactionid`, `amount`, `status`) 
-                               VALUES ('$userid', '$inputgameid', '$finalamount', '1')");
-    @$orderid = mysqli_insert_id($con);
+			// Insert into tbl_betting with 'value' and 'number' as NULL
+$sql1 = mysqli_query($con, "INSERT INTO `tbl_betting` (`userid`, `periodid`, `type`, `value`, `number`, `amount`, `tab`, `acceptrule`)  
+VALUES ('$userid', '$inputgameid', '$type', NULL, NULL, '$finalamount', '$tab', '$presalerule')");
 
-    // Wallet summary
-    $sql3 = mysqli_query($con, "INSERT INTO `tbl_walletsummery`(`userid`, `orderid`, `amount`, `type`, `actiontype`) 
-                                VALUES ('$userid', '$orderid', '$finalamount', 'debit', 'join')");
+// Transaction insertion into tbl_order
+$sql2 = mysqli_query($con, "INSERT INTO `tbl_order`(`userid`, `transactionid`, `amount`, `status`) 
+VALUES ('$userid', '$inputgameid', '$finalamount', '1')");
+@$orderid = mysqli_insert_id($con);
 
-    // Calculate the new wallet balance
-    $walletbalance = wallet($con_evolive, 'balance', $userid);   
-    $finalbalanceDebit = $walletbalance - $finalamount;
+// Wallet summary insertion into tbl_walletsummery
+$sql3 = mysqli_query($con, "INSERT INTO `tbl_walletsummery`(`userid`, `orderid`, `amount`, `type`, `actiontype`) 
+ VALUES ('$userid', '$orderid', '$finalamount', 'debit', 'join')");
 
-    // Update the user's balance
-    $sqlwallet = mysqli_query($con_evolive, "UPDATE `users` SET `balance` = '$finalbalanceDebit' WHERE `id`= '$userid'");
+// Calculate the new wallet balance
+$walletbalance = wallet($con_evolive, 'balance', $userid);   
+$finalbalanceDebit = $walletbalance - $finalamount;
 
-    // Revamp the transaction ID generation
-    $gameId = "EVO-colourprediction";
-    $bytes = random_bytes(8);
-    $transactionId = strtoupper(bin2hex($bytes));
+// Update the user's balance in users table
+$sqlwallet = mysqli_query($con_evolive, "UPDATE `users` SET `balance` = '$finalbalanceDebit' WHERE `id`= '$userid'");
 
+// Generate a unique transaction ID
+$gameId = "EVO-colourprediction";
+$bytes = random_bytes(8);
+$transactionId = strtoupper(bin2hex($bytes));
+
+// Output or further processing with $transactionId if needed
+	if($value=="Red"|| $value =="Green"|| $value=="Violet"){
+		$updateValue = mysqli_query($con, "UPDATE `tbl_betting` SET `value` = '$value' WHERE `periodid` = '$inputgameid'");
+
+	}elseif($value=="0"|| $value =="1"|| $value=="2"|| $value=="3"|| $value=="4"|| $value=="5"|| $value=="6"|| $value=="7"|| $value=="8"|| $value=="9"){
+		$updateValue = mysqli_query($con, "UPDATE `tbl_betting` SET `number` = '$value' WHERE `periodid` = '$inputgameid'");
+	}
+   
 }
 
 			
