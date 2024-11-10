@@ -60,10 +60,18 @@ $(document).ready(function () {
 			success: function(html) {
 				var arr = html.split('~');
 				if (arr[0] == 1) {
+					console.log(arr[0])
 					waitlist(tab, userid, tab + 'wait');
 					$('#payment').modal('hide');
 					var balance = parseFloat(arr[1]).toFixed(2);
 					document.getElementById('balance').innerHTML = balance;
+					$('#alert').modal({backdrop: 'static', keyboard: false});
+					$('#alert').modal('show');
+					document.getElementById('alertmessage').innerHTML = "<h4>Completed</h4><p>Your contract has been successfully completed.</p>";
+					return false;
+				}
+				if (arr[0] == 8) {
+					$('#payment').modal('hide');
 					$('#alert').modal({backdrop: 'static', keyboard: false});
 					$('#alert').modal('show');
 					document.getElementById('alertmessage').innerHTML = "<h4>Completed</h4><p>Your contract has been successfully completed.</p>";
