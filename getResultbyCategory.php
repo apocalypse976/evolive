@@ -8,7 +8,7 @@ if($_SESSION['frontuserid']=="")
 }
 include("include/connection.php");
 $category=$_POST['category'];
-$userid=$_SESSION['frontuserid'];
+$userid=$_SESSION['AuthUser']['username'];
 $today=date('Y-m-d');
 if($category=='parity')//1
 {?>

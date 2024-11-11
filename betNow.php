@@ -63,20 +63,19 @@ if ($row!=NULL &&((mysqli_num_rows($query) > 0 || ( $row['value'] !== NULL ||  $
     // Check if value and number are not NULL
 	$existingValue=$row['value'];
 	$existingNumber=$row['number'];
-		if($existingValue==NULL){
-			if($value=="Red"|| $value =="Green"|| $value=="Violet"){
+	if(($value=="Red"|| $value =="Green"|| $value=="Violet")&&($existingValue==NULL)){
 				$updateValue = mysqli_query($con, "UPDATE `tbl_betting` SET `value` = '$value' WHERE `periodid` = '$inputgameid'");
+				echo "1";
+			exit;
 			}
-			echo "1~Bet Placed Sucessfully in Colour";
-			exit;
-		}elseif($existingNumber==NULL){
-			if($value=="0"|| $value =="1"|| $value=="2"|| $value=="3"|| $value=="4"|| $value=="5"|| $value=="6"|| $value=="7"|| $value=="8"|| $value=="9"){
+			elseif(($existingNumber==NULL)&&($value=="0"|| $value =="1"|| $value=="2"|| $value=="3"|| $value=="4"|| $value=="5"|| $value=="6"|| $value=="7"|| $value=="8"|| $value=="9")){
+
 				$updateValue = mysqli_query($con, "UPDATE `tbl_betting` SET `number` = '$value' WHERE `periodid` = '$inputgameid'");
-				
-			}        echo "1~Bet Placed Sucessfully in Number";
+				echo "1";
 			exit;
+			}
 			
-    }echo "7~You have already placed a bet in this period with value: $existingValue and number: $existingNumber. You cannot place another bet.";
+			echo "7";
 	exit;
 }else{
 			$sql1 = mysqli_query($con, "INSERT INTO `tbl_betting` (`userid`, `periodid`, `type`, `value`, `number`, `amount`, `tab`, `acceptrule`)  

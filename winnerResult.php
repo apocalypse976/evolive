@@ -1,12 +1,14 @@
 <?php 
-
+ob_start();
+session_start();
 include("userResult.php");
+// $id= $_POST['gameid'];
+// echo $id;
+// $getperiod_Query=mysqli_query($con,"select * from `tbl_gameid` order by id desc limit 1");
+// $getperiodRow=mysqli_num_rows($getperiod_Query);
+// $getperiodidRow=mysqli_fetch_array($getperiod_Query);
 
-$getperiod_Query=mysqli_query($con,"select * from `tbl_gameid` order by id desc limit 1");
-$getperiodRow=mysqli_num_rows($getperiod_Query);
-$getperiodidRow=mysqli_fetch_array($getperiod_Query);
-
-$periodid=$getperiodidRow['gameid'];
+$periodid= $_POST['gameid'];
 $type1='parity';
 // $type2='sapre';
 // $type3='bcone';
@@ -543,7 +545,7 @@ $ResultQuery= mysqli_query($con,"INSERT INTO `tbl_result`(`periodid`, `price`, `
 $truncateQuery=mysqli_query($con,"TRUNCATE TABLE `tbl_tempwinner`");
 
 // Assuming you already have the authenticated user's ID in the session
-// $userid = $_SESSION['AuthUser']['userid'];  // Get the user ID from session
+ // Get the user ID from session
 
 // // Fetch the periodid of the authenticated user
 // $periodid = $_POST['periodid'];  // You can also get the periodid from the session or form input
@@ -580,11 +582,10 @@ $truncateQuery=mysqli_query($con,"TRUNCATE TABLE `tbl_tempwinner`");
 //     echo "Betting Value: $bettingValue<br>";
 //     echo "Random Color: $randomColor<br>";
 //     echo "Random Result: $randomResult<br>";
-// } else {
-//     echo "No data found for the user in the given period.";
 // }
 
 
 //check if result done
 echo("done");
+include("betplaced.php");
 ?>
