@@ -340,7 +340,7 @@ $walletResult=mysqli_fetch_array($selectwallet);
       </div>
        <div1 >
          
-       <ul class="words">
+       <!-- <ul class="words">
               
                 <li1>Congratulations to number ******8180<span  style="color: rgb(248, 67, 80);"> Winning 150.4K</span></li1>
                 
@@ -363,7 +363,7 @@ $walletResult=mysqli_fetch_array($selectwallet);
                       <li1>Congratulations to number ******6916
                 <span  style="color: rgb(248, 67, 80);"> Winning 16.5K</span></li1>
                  
-            </ul>
+            </ul> -->
        </div1>
     
       <div class="bg-light  layout text-center mt-2">

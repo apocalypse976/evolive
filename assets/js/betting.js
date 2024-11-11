@@ -9,7 +9,7 @@ $(document).ready(function () {
 		var inputgameid = $('input#inputgameid').val();
 		var tab = $('input#tab').val();
 		var placedValue = $('input#placedValue').val();
-	
+		refreshbalance(userid);
 		// Validation checks
 		if (finalamount == 0) {
 			$('#payment').modal('hide');
@@ -126,7 +126,24 @@ $(document).ready(function () {
 //=============================payment detail=========================================================================
 
 });
-
+function refreshbalance(id){
+	$('#loader').modal({backdrop: 'static', keyboard: false})  
+	$('#loader').modal('show');
+   
+   $.ajax({
+	   type: "Post",
+	   data:"userid=" + id,
+	   url: "getwalletbalance.php",
+	   success: function (html) {
+		   console.log(html);
+		
+			   document.getElementById('balance').innerHTML =html;
+		 return false;
+		 },
+		 error: function (e) {}
+		 });
+	   
+	   }
 function waitlist(category,userid,containerid)
 { //alert(containerid);
 var inputgameid=$("#futureid").val();

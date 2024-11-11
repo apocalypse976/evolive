@@ -66,17 +66,17 @@ if ($row!=NULL &&((mysqli_num_rows($query) > 0 || ( $row['value'] !== NULL ||  $
 	if(($value=="Red"|| $value =="Green"|| $value=="Violet")&&($existingValue==NULL)){
 				$updateValue = mysqli_query($con, "UPDATE `tbl_betting` SET `value` = '$value' WHERE `periodid` = '$inputgameid'");
 				echo "1";
-			exit;
+			// exit;
 			}
 			elseif(($existingNumber==NULL)&&($value=="0"|| $value =="1"|| $value=="2"|| $value=="3"|| $value=="4"|| $value=="5"|| $value=="6"|| $value=="7"|| $value=="8"|| $value=="9")){
 
 				$updateValue = mysqli_query($con, "UPDATE `tbl_betting` SET `number` = '$value' WHERE `periodid` = '$inputgameid'");
 				echo "1";
-			exit;
+			// exit;
 			}
 			
 			echo "7";
-	exit;
+	// exit;
 }else{
 			$sql1 = mysqli_query($con, "INSERT INTO `tbl_betting` (`userid`, `periodid`, `type`, `value`, `number`, `amount`, `tab`, `acceptrule`)  
 		VALUES ('$userid', '$inputgameid', '$type', NULL, NULL, '$finalamount', '$tab', '$presalerule')");
@@ -106,12 +106,12 @@ if ($row!=NULL &&((mysqli_num_rows($query) > 0 || ( $row['value'] !== NULL ||  $
 			if($value=="Red"|| $value =="Green"|| $value=="Violet"){
 				$updateValue = mysqli_query($con, "UPDATE `tbl_betting` SET `value` = '$value' WHERE `periodid` = '$inputgameid'");
 				echo "1";
-				exit;
+				// exit;
 		
 			}elseif($value=="0"|| $value =="1"|| $value=="2"|| $value=="3"|| $value=="4"|| $value=="5"|| $value=="6"|| $value=="7"|| $value=="8"|| $value=="9"){
 				$updateValue = mysqli_query($con, "UPDATE `tbl_betting` SET `number` = '$value' WHERE `periodid` = '$inputgameid'");
 				echo "1";
-				exit;
+				// exit;
 				}
 	}
 	
@@ -131,7 +131,7 @@ if ($row!=NULL &&((mysqli_num_rows($query) > 0 || ( $row['value'] !== NULL ||  $
 
 			// echo"1~".wallet($con_evolive,'balance',$userid);
 
-			//echo"1~".wallet($con,'amount',$userid);
+			// echo"1~".wallet($con_evolive,'balance',$userid);
 		}
 
 	}
