@@ -11,7 +11,7 @@ $category=$_POST['category'];
 $userid=$_SESSION['AuthUser']['username'];
 $periodid=$_POST['periodid'];
 $today=date('Y-m-d');
-if($category!='')
+if($category=='')
 {?>
         
         <div class="table-container">

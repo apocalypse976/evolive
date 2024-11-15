@@ -6,7 +6,7 @@ function resultbyUser($con,$periodid,$number,$result,$openprice,$tabtype){
 $color=$result;
 $a=explode("+",$color);
 $b="'" . implode ( "', '", $a ) . "'";
-
+print_r($b);
 
 if($color=='red+violet'){ 
 $sqli=mysqli_query($con,"select *, 

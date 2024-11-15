@@ -21,7 +21,16 @@ if($_SESSION['AuthUser']['username'] =="")
 <style>
 
 
-
+.bigsmallbuttons{
+  display:flex;
+  width: 50%;
+  margin:auto;
+}
+.bigsmallbuttons .btn{
+  padding: 0 10px;
+    width: 100px;
+    margin:auto;
+} 
 div1 {
     overflow: hidden;
     position: relative;
@@ -234,6 +243,11 @@ h5 span{ color:#333; font-size:22px;}
     color: #333;
 	border-bottom: solid 2px #565EFF ;
 }
+.bigsmall{
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+}
 .recordlink .title{font-size: 14px;
 font-weight: 500;}
 #alert h4{font-size: 1rem;}
@@ -424,7 +438,14 @@ $walletResult=mysqli_fetch_array($selectwallet);
       </div>
       </div>
       </div>
-      
+      <div class= bigsmall>
+      <div class="bigsmallbuttons">
+      <button type="button" class="btn btn-sm btn-danger gbutton none btn6" onClick="betbutton('#9c27b0','button','Big');">Join Big</button>
+      </div>
+      <div class="bigsmallbuttons">
+      <button type="button" class="btn btn-sm btn-success gbutton none btn6" onClick="betbutton('#9c27b0','button','Small');">Join Small</button>
+      </div>
+      </div>
       </div>
       </div>
       <!--=====================game area end============================-->
@@ -541,6 +562,9 @@ $walletResult=mysqli_fetch_array($selectwallet);
     </div>
     </div>
   </div>
+  <?php
+  // include("userhistory.php");
+  ?>
 <!-- Jquery --> 
 <script src="assets/js/lib/jquery-3.4.1.min.js"></script> 
 <!-- Bootstrap--> 
@@ -697,9 +721,13 @@ document.getElementById('tab').value = tabname;
 //====================== get Result==============================
 function winnerResult() {
   var gameid = document.getElementById("gameid").textContent;
+  var finalamount = document.getElementById("finalamount").value;
   $.ajax({
     type: "Post",
-    data:{ gameid: gameid },
+    data: { 
+      gameid: gameid,
+      finalamount: finalamount,
+    },
     url: "winnerResult.php",
     success: function() {
      console.log('ok');
@@ -719,9 +747,6 @@ $.ajax({
     success: function (html) {
 	 document.getElementById(containerid).innerHTML=html;
 	 waitlist('parity',<?php echo $userid;?>,'paritywait');
-	 waitlist('sapre',<?php echo $userid;?>,'saprewait');
-	 waitlist('bcone',<?php echo $userid;?>,'bconewait');
-	 waitlist('emerd',<?php echo $userid;?>,'emerdwait');
 	 if(category=='parity'){
 	  $('#parityt').DataTable({
       "paging": true,
@@ -801,9 +826,9 @@ $.ajax({
 	 
 	}
 
-$(document).ready(function () {
-	waitlist('parity',<?php echo $userid;?>,'paritywait');
-});
+// $(document).ready(function () {
+// 	waitlist('parity',<?php echo $userid;?>,'paritywait');
+// });
 
 function reloadbtn(id){
  $('#loader').modal({backdrop: 'static', keyboard: false})  

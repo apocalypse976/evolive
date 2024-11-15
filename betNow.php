@@ -3,6 +3,7 @@ ob_start();
 session_start();
 include("include/connection.php");
 
+@$orderid = mysqli_insert_id($con);
 @$userid=$_POST['userid'];
 @$type=$_POST['type'];
 @$value=$_POST['value'];
@@ -12,9 +13,6 @@ include("include/connection.php");
 @$tab=$_POST['tab'];
 @$presalerule=$_POST['presalerule'];
 @$placedValue=$_POST['placedValue'];
-
-
-
 if($userid=="" || $type=="" || $inputgameid=="" || $finalamount==""|| $placedValue=="")
 {
 	echo"2";
@@ -32,13 +30,12 @@ if($userid=="" || $type=="" || $inputgameid=="" || $finalamount==""|| $placedVal
 		echo"5";
 		//check if amount below 10
 	}else{
-
 		$chkwallet=mysqli_query($con_evolive,"select `balance` from `users` where balance >= $finalamount and`id`='".$userid."'");
 		//$chkwallet=mysqli_query($con,"select `amount` from `tbl_wallet` where amount >= $finalamount and`userid`='".$userid."'");
 		$chkwalletRow=mysqli_num_rows($chkwallet);	
 		$chkwalletResult=mysqli_fetch_array($chkwallet);
 		
-					
+						
 		//rewamp 
 		
 		if($chkwalletRow==0){
@@ -58,33 +55,72 @@ $row = mysqli_fetch_assoc($query);
 
 
 
-if ($row!=NULL &&((mysqli_num_rows($query) > 0 || ( $row['value'] !== NULL ||  $row['number'] !== NULL)))) {
+if ($row!=NULL &&((mysqli_num_rows($query) > 0 || ( $row['value'] !== NULL ||  $row['number'] !== NULL||$row['big_small'])))) {
 
     // Check if value and number are not NULL
 	$existingValue=$row['value'];
 	$existingNumber=$row['number'];
+	$existingbig_small=$row['big_small'];
 	if(($value=="Red"|| $value =="Green"|| $value=="Violet")&&($existingValue==NULL)){
-				$updateValue = mysqli_query($con, "UPDATE `tbl_betting` SET `value` = '$value' WHERE `periodid` = '$inputgameid'");
+		$updateValue = mysqli_query($con, "UPDATE `tbl_betting` SET `value` = '$value', `amount` = '$finalamount' WHERE `periodid` = '$inputgameid'");
+				
+				$walletbalance = wallet($con_evolive, 'balance', $userid);   
+				$finalbalanceDebit = $walletbalance - $finalamount;
+				$sqlwallet = mysqli_query($con_evolive, "UPDATE `users` SET `balance` = '$finalbalanceDebit' WHERE `id`= '$userid'");
+				$gameId = "EVO-colourprediction";
+				$bytes = random_bytes(8);
+				$transactionId = strtoupper(bin2hex($bytes));
+				$sqlTransaction= mysqli_query($con_evolive,"INSERT INTO `transactions`(`user_id`,`round_id`,`game_id`,`amount`,`charge`,`final_balance`,`trx_type`,`remarks`,`trx_id`,`qt_trx_id`) VALUES ('".$userid."','".$inputgameid."','0','".$finalamount."','0.00','".$finalamount."','-','DEDUCTED BALANCE (Colour Prediction)','".$transactionId."','".$orderid."')");
+					
+				$sqlBetHistory= mysqli_query($con_evolive,"INSERT INTO `user_qt_exposures`(`txnid`,`txnType`,`user_id`,`roundId`,`amount`,`currency`,`gameId`,`category`,`clientRoundId`,`betId`,`profit_loss`) VALUES ('".$transactionId."','DEBIT','".$userid."','".$inputgameid."','".$finalamount."','INR','".$gameId."','COLOUR_PREDICTION','','','0')");
 				echo "1";
-			// exit;
+			exit;
 			}
 			elseif(($existingNumber==NULL)&&($value=="0"|| $value =="1"|| $value=="2"|| $value=="3"|| $value=="4"|| $value=="5"|| $value=="6"|| $value=="7"|| $value=="8"|| $value=="9")){
 
-				$updateValue = mysqli_query($con, "UPDATE `tbl_betting` SET `number` = '$value' WHERE `periodid` = '$inputgameid'");
+				$updateValue = mysqli_query($con, "UPDATE `tbl_betting` SET `number` = '$value', `numberammount` = '$finalamount' WHERE `periodid` = '$inputgameid'");
+			
+				$walletbalance = wallet($con_evolive, 'balance', $userid);   
+				
+				$finalbalanceDebit = $walletbalance - $finalamount;
+				$sqlwallet = mysqli_query($con_evolive, "UPDATE `users` SET `balance` = '$finalbalanceDebit' WHERE `id`= '$userid'");
+				$gameId = "EVO-colourprediction";
+				$bytes = random_bytes(8);
+				$transactionId = strtoupper(bin2hex($bytes));
+				$sqlTransaction= mysqli_query($con_evolive,"INSERT INTO `transactions`(`user_id`,`round_id`,`game_id`,`amount`,`charge`,`final_balance`,`trx_type`,`remarks`,`trx_id`,`qt_trx_id`) VALUES ('".$userid."','".$inputgameid."','0','".$finalamount."','0.00','".$finalamount."','-','DEDUCTED BALANCE (Colour Prediction)','".$transactionId."','".$orderid."')");
+					
+				$sqlBetHistory= mysqli_query($con_evolive,"INSERT INTO `user_qt_exposures`(`txnid`,`txnType`,`user_id`,`roundId`,`amount`,`currency`,`gameId`,`category`,`clientRoundId`,`betId`,`profit_loss`) VALUES ('".$transactionId."','DEBIT','".$userid."','".$inputgameid."','".$finalamount."','INR','".$gameId."','COLOUR_PREDICTION','','','0')");
 				echo "1";
-			// exit;
+			exit;
+			}
+			elseif(($existingbig_small==NULL)&&($value=="Big"|| $value =="Small")){
+
+				$updateValue = mysqli_query($con, "UPDATE `tbl_betting` SET `big_small` = '$value', `bigsmall_ammount` = '$finalamount' WHERE `periodid` = '$inputgameid'");
+			
+				$walletbalance = wallet($con_evolive, 'balance', $userid);   
+				
+				$finalbalanceDebit = $walletbalance - $finalamount;
+				$sqlwallet = mysqli_query($con_evolive, "UPDATE `users` SET `balance` = '$finalbalanceDebit' WHERE `id`= '$userid'");
+				$gameId = "EVO-colourprediction";
+				$bytes = random_bytes(8);
+				$transactionId = strtoupper(bin2hex($bytes));
+				$sqlTransaction= mysqli_query($con_evolive,"INSERT INTO `transactions`(`user_id`,`round_id`,`game_id`,`amount`,`charge`,`final_balance`,`trx_type`,`remarks`,`trx_id`,`qt_trx_id`) VALUES ('".$userid."','".$inputgameid."','0','".$finalamount."','0.00','".$finalamount."','-','DEDUCTED BALANCE (Colour Prediction)','".$transactionId."','".$orderid."')");
+					
+				$sqlBetHistory= mysqli_query($con_evolive,"INSERT INTO `user_qt_exposures`(`txnid`,`txnType`,`user_id`,`roundId`,`amount`,`currency`,`gameId`,`category`,`clientRoundId`,`betId`,`profit_loss`) VALUES ('".$transactionId."','DEBIT','".$userid."','".$inputgameid."','".$finalamount."','INR','".$gameId."','COLOUR_PREDICTION','','','0')");
+				echo "1";
+			exit;
 			}
 			
 			echo "7";
-	// exit;
+	exit;
 }else{
-			$sql1 = mysqli_query($con, "INSERT INTO `tbl_betting` (`userid`, `periodid`, `type`, `value`, `number`, `amount`, `tab`, `acceptrule`)  
-		VALUES ('$userid', '$inputgameid', '$type', NULL, NULL, '$finalamount', '$tab', '$presalerule')");
+		$sql1 = mysqli_query($con, "INSERT INTO `tbl_betting` (`userid`, `periodid`, `type`, `value`, `number`, `amount`,`numberammount`, `tab`, `acceptrule`)  
+		VALUES ('$userid', '$inputgameid', '$type', NULL, NULL, 0, 0,'$tab', '$presalerule')");
 		
 		// Transaction insertion into tbl_order
 		$sql2 = mysqli_query($con, "INSERT INTO `tbl_order`(`userid`, `transactionid`, `amount`, `status`) 
 		VALUES ('$userid', '$inputgameid', '$finalamount', '1')");
-		@$orderid = mysqli_insert_id($con);
+
 		
 		// Wallet summary insertion into tbl_walletsummery
 		$sql3 = mysqli_query($con, "INSERT INTO `tbl_walletsummery`(`userid`, `orderid`, `amount`, `type`, `actiontype`) 
@@ -92,6 +128,7 @@ if ($row!=NULL &&((mysqli_num_rows($query) > 0 || ( $row['value'] !== NULL ||  $
 		
 		// Calculate the new wallet balance
 		$walletbalance = wallet($con_evolive, 'balance', $userid);   
+
 		$finalbalanceDebit = $walletbalance - $finalamount;
 		
 		// Update the user's balance in users table
@@ -101,18 +138,26 @@ if ($row!=NULL &&((mysqli_num_rows($query) > 0 || ( $row['value'] !== NULL ||  $
 		$gameId = "EVO-colourprediction";
 		$bytes = random_bytes(8);
 		$transactionId = strtoupper(bin2hex($bytes));
-		
+		$sqlTransaction= mysqli_query($con_evolive,"INSERT INTO `transactions`(`user_id`,`round_id`,`game_id`,`amount`,`charge`,`final_balance`,`trx_type`,`remarks`,`trx_id`,`qt_trx_id`) VALUES ('".$userid."','".$inputgameid."','0','".$finalamount."','0.00','".$finalamount."','-','DEDUCTED BALANCE (Colour Prediction)','".$transactionId."','".$orderid."')");
+			
+		$sqlBetHistory= mysqli_query($con_evolive,"INSERT INTO `user_qt_exposures`(`txnid`,`txnType`,`user_id`,`roundId`,`amount`,`currency`,`gameId`,`category`,`clientRoundId`,`betId`,`profit_loss`) VALUES ('".$transactionId."','DEBIT','".$userid."','".$inputgameid."','".$finalamount."','INR','".$gameId."','COLOUR_PREDICTION','','','0')");
+
 		// Output or further processing with $transactionId if needed
 			if($value=="Red"|| $value =="Green"|| $value=="Violet"){
-				$updateValue = mysqli_query($con, "UPDATE `tbl_betting` SET `value` = '$value' WHERE `periodid` = '$inputgameid'");
+				$updateValue = mysqli_query($con, "UPDATE `tbl_betting` SET `value` = '$value', `amount` = '$finalamount' WHERE `periodid` = '$inputgameid'");
 				echo "1";
-				// exit;
+				exit;
 		
 			}elseif($value=="0"|| $value =="1"|| $value=="2"|| $value=="3"|| $value=="4"|| $value=="5"|| $value=="6"|| $value=="7"|| $value=="8"|| $value=="9"){
-				$updateValue = mysqli_query($con, "UPDATE `tbl_betting` SET `number` = '$value' WHERE `periodid` = '$inputgameid'");
+				$updateValue = mysqli_query($con, "UPDATE `tbl_betting` SET `number` = '$value', `numberammount` = '$finalamount' WHERE `periodid` = '$inputgameid'");
 				echo "1";
-				// exit;
-				}
+				exit;
+			}
+			elseif($value=="Small"||$value=="Big"){
+					$updateValue = mysqli_query($con, "UPDATE `tbl_betting` SET `big_small` = '$value', `bigsmall_ammount` = '$finalamount' WHERE `periodid` = '$inputgameid'");
+					echo "1";
+					exit;
+			}
 	}
 	
 }
@@ -121,9 +166,7 @@ if ($row!=NULL &&((mysqli_num_rows($query) > 0 || ( $row['value'] !== NULL ||  $
 
 			
 			
-			//$sqlTransaction= mysqli_query($con_evolive,"INSERT INTO `transactions`(`user_id`,`round_id`,`game_id`,`amount`,`charge`,`final_balance`,`trx_type`,`remarks`,`trx_id`,`qt_trx_id`) VALUES ('".$userid."','".$inputgameid."','0','".$finalamount."','0.00','".$finalamount."','-','DEDUCTED BALANCE (Colour Prediction)','".$transactionId."','".$orderid."')");
 			
-			//$sqlBetHistory= mysqli_query($con_evolive,"INSERT INTO `user_qt_exposures`(`txnid`,`txnType`,`user_id`,`roundId`,`amount`,`currency`,`gameId`,`category`,`clientRoundId`,`betId`,`profit_loss`) VALUES ('".$transactionId."','DEBIT','".$userid."','".$inputgameid."','".$finalamount."','INR','".$gameId."','COLOUR_PREDICTION','','','0')");
 
 			//=====================transaction end==============================================
 			//revamp comment
@@ -131,7 +174,7 @@ if ($row!=NULL &&((mysqli_num_rows($query) > 0 || ( $row['value'] !== NULL ||  $
 
 			// echo"1~".wallet($con_evolive,'balance',$userid);
 
-			// echo"1~".wallet($con_evolive,'balance',$userid);
+			echo"1~".wallet($con_evolive,'balance',$userid);
 		}
 
 	}

@@ -9,7 +9,7 @@ $(document).ready(function () {
 		var inputgameid = $('input#inputgameid').val();
 		var tab = $('input#tab').val();
 		var placedValue = $('input#placedValue').val();
-		refreshbalance(userid);
+		// location.reload();
 		// Validation checks
 		if (finalamount == 0) {
 			$('#payment').modal('hide');
@@ -60,7 +60,6 @@ $(document).ready(function () {
 			success: function(html) {
 				var arr = html.split('~');
 				if (arr[0] == 1) {
-					console.log(arr[0])
 					waitlist(tab, userid, tab + 'wait');
 					$('#payment').modal('hide');
 					var balance = parseFloat(arr[1]).toFixed(2);
@@ -68,7 +67,9 @@ $(document).ready(function () {
 					$('#alert').modal({backdrop: 'static', keyboard: false});
 					$('#alert').modal('show');
 					document.getElementById('alertmessage').innerHTML = "<h4>Completed</h4><p>Your contract has been successfully completed.</p>";
-					return false;
+					// setTimeout(function() {
+					// 	location.reload();
+					// }, 1000);
 				}
 				if (arr[0] == 8) {
 					$('#payment').modal('hide');
@@ -158,3 +159,13 @@ var inputgameid=$("#futureid").val();
       error: function (e) {}
       });
 	}
+
+	history.pushState(null, null, window.location.href);
+
+// Listen for the back button event
+window.onpopstate = function () {
+    history.pushState(null, null, window.location.href);
+};
+// document.addEventListener("contextmenu", function(event) {
+//     event.preventDefault();
+// });

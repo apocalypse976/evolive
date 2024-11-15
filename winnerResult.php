@@ -9,6 +9,7 @@ include("userResult.php");
 // $getperiodidRow=mysqli_fetch_array($getperiod_Query);
 
 $periodid= $_POST['gameid'];
+$finalammount= $_POST['finalamount'];
 $type1='parity';
 // $type2='sapre';
 // $type3='bcone';

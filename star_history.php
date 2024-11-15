@@ -24,7 +24,7 @@ if($_SESSION['AuthUser']['username'] =="")
 <body><b>
 <?php
 include("include/connection.php");
-$userid=$_SESSION['frontuserid'];
+$userid= $_SESSION['AuthUser']['userid'];
 $selectruser=mysqli_query($con,"select * from `tbl_user` where `id`='".$userid."'");
 $userresult=mysqli_fetch_array($selectruser);
 $selectwallet=mysqli_query($con,"select * from `tbl_wallet` where `userid`='".$userid."'");
